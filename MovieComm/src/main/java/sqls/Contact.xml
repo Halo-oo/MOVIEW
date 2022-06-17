@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="Contact">
+	<select id="contact" parameterType="mul.camp.seven.dto.ContactParam" resultType="mul.camp.seven.dto.ContactDto">
+	SELECT CONTACT_SEQ, ID, TITLE, CONTENT, WDATE, DEL
+	FROM CONTACT
+	<if test="choice != null and choice != '' and search != null and search != ''">
+		<if test="choice == 'title'">
+			WHERE TITLE LIKE '%'||#{search}||'%'
+		</if>
+		<if test="choice == 'content'">
+			WHERE CONTENT LIKE '%'||#{search}||'%'
+		</if>
+		<if test="choice == 'writer'">
+			WHERE ID=#{search}
+		</if>	
+	</if>
+	
+</select>
+
+<!-- #21# ANSWER 비어있음 -->
+<insert id="contactwrite" parameterType="mul.camp.seven.dto.ContactDto">
+	INSERT INTO CONTACT(CONTACT_SEQ, ID, TITLE, CONTENT, WDATE, DEL)
+	VALUES(CONTACT_SEQ.NEXTVAL, #{id}, #{title}, #{content}, SYSDATE, 0)
+</insert>
+
+<select id="getContact" parameterType="java.lang.Integer" resultType="mul.camp.seven.dto.ContactDto">
+	SELECT CONTACT_SEQ, ID, TITLE, CONTENT, WDATE, DEL
+	FROM CONTACT
+	WHERE CONTACT_SEQ=#{seq}
+</select>
+
+<!-- #21# WHERE절 SEQ 에서 CONTACT_SEQ로 변경 -->
+<delete id="deletecontact" parameterType="java.lang.Integer">
+	DELETE FROM CONTACT
+	WHERE CONTACT_SEQ=#{seq}
+</delete>
+
+<update id="contactupdate" parameterType="mul.camp.seven.dto.ContactDto">
+	UPDATE CONTACT
+	SET TITLE=#{title}, CONTENT=#{content}
+	WHERE CONTACT_SEQ=#{seq}
+</update>
+
+
+</mapper>
